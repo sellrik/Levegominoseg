@@ -7,7 +7,7 @@ namespace Levegominoseg
         static void Main(string[] args)
         {
             var downloader = new Downloader();
-            downloader.Download();
+            var data = downloader.Download();
         }
     }
 }

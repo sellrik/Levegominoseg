@@ -18,7 +18,7 @@ namespace Levegominoseg
             46, // Erzsébet tér
         };
 
-        public void Download()
+        public List<AirQuality> Download()
         {
             var result = new List<AirQuality>();
 
@@ -27,6 +27,8 @@ namespace Levegominoseg
                 result.Add(DownloadStation(stationId));
                 Thread.Sleep(3000);
             }
+
+            return result;
         }
 
         AirQuality DownloadStation(int stationId)
