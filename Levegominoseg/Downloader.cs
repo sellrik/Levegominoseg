@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Levegominoseg
 {
-    class Downloader
+    public class Downloader
     {
         readonly int[] StationIds = new int[]
         {
@@ -18,14 +18,14 @@ namespace Levegominoseg
             46, // Erzsébet tér
         };
 
-        public List<AirQuality> Download()
+        public List<AirQuality> Download(int sleepSec = 3)
         {
             var result = new List<AirQuality>();
 
             foreach (var stationId in StationIds)
             {
                 result.Add(DownloadStation(stationId));
-                Thread.Sleep(3000);
+                Thread.Sleep(sleepSec * 1000);
             }
 
             return result;
