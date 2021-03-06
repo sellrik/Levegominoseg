@@ -20,7 +20,6 @@ namespace Levegominoseg
                 try
                 {
                     result.Add(DownloadStation(stationId));
-                    throw new Exception();
                 }
                 catch (Exception ex)
                 {
