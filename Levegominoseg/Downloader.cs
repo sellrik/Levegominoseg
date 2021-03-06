@@ -11,21 +11,25 @@ namespace Levegominoseg
 {
     public class Downloader
     {
-        readonly int[] StationIds = new int[]
-        {
-            40, // Széna tér
-            45, // Budapest Honvéd
-            46, // Erzsébet tér
-        };
-
-        public List<AirQuality> Download(int sleepSec = 3)
+        public List<AirQuality> Download(int[] stationIds, int sleepSec = 3)
         {
             var result = new List<AirQuality>();
 
-            foreach (var stationId in StationIds)
+            foreach (var stationId in stationIds)
             {
-                result.Add(DownloadStation(stationId));
-                Thread.Sleep(sleepSec * 1000);
+                try
+                {
+                    result.Add(DownloadStation(stationId));
+                    throw new Exception();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Download failed. StationId: {stationId}, Exception: {ex.Message}");
+                }
+                finally
+                {
+                    Thread.Sleep(sleepSec * 1000);
+                }
             }
 
             return result;
@@ -33,14 +37,43 @@ namespace Levegominoseg
 
         AirQuality DownloadStation(int stationId)
         {
+            Console.WriteLine($"Downloading. Station: {stationId}");
             string response;
             using (var client = new HttpClient())
             {
                 response = client.GetStringAsync($"http://www.levegominoseg.hu/olm/GetActualMeasuredComponentsValues?stationId={stationId}").Result;
             }
 
-            var data = Parse(response);
-            var aiqQuality = GetAirQuality(data);
+            Console.WriteLine($"Downloaded. Station: {stationId}");
+
+            ActualMeasuredComponentsValuesModel data;
+
+            try
+            {
+                Console.WriteLine($"Parsing data. Station: {stationId}");
+                data = Parse(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to parse data. Station: {stationId}, Exception: {ex.ToString()}");
+                throw;
+            }
+
+            AirQuality aiqQuality;
+        
+            try
+            {
+                Console.WriteLine($"Processing data. Station: {stationId}");
+                aiqQuality = GetAirQuality(data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to process data. Station: {stationId}, Exception: {ex.ToString()}");
+                throw;
+            }
+
+            Console.WriteLine($"Download finished. Station: {stationId}");
+
             return aiqQuality;
         }
 

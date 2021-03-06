@@ -7,7 +7,15 @@ namespace Levegominoseg
         static void Main(string[] args)
         {
             var downloader = new Downloader();
-            var data = downloader.Download();
+
+            var stationIds = new int[]
+            {
+                40, // Széna tér
+                45, // Budapest Honvéd
+                46, // Erzsébet tér
+            };
+
+            var data = downloader.Download(stationIds);
         }
     }
 }
